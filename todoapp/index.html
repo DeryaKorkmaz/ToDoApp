@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Uygulaması</title>
+</head>
+<body>
+    <h1>Todo Uygulaması</h1>
+    
+    <ul id="todoList">
+        {{range .Todos}}
+            <li>{{.}}</li>
+        {{end}}
+    </ul>
+    
+    <input type="text" id="todoInput" placeholder="Yeni Todo">
+    <button onclick="addTodo()">Ekle</button>
+
+    
+    <ul id="todoList">
+        {{range $index, $todo := .Todos}}
+            <li>
+                {{.}}
+                <button onclick="updateTodo({{$index}})">Güncelle</button>
+                <button onclick="deleteTodo({{$index}})">Sil</button>
+            </li>
+        {{end}}
+    </ul>
+    
+    
+    <script>
+        async function addTodo() {
+            const text = document.getElementById("todoInput").value;
+            const response = await fetch("/api/todos", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ text }),
+            });
+
+            const result = await response.json();
+            alert(result.message);
+            location.reload();
+        }
+    </script>
+
+
+<!-- ... Diğer HTML kodları ... -->
+
+<script>
+    async function updateTodo(index) {
+        const text = prompt("Yeni todo metni:");
+        const response = await fetch(`/api/todos/${index}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ text }),
+        });
+
+        const result = await response.json();
+        alert(result.message);
+        location.reload();
+    }
+
+    async function deleteTodo(index) {
+        const response = await fetch(`/api/todos/${index}`, {
+            method: "DELETE",
+        });
+
+        const result = await response.json();
+        alert(result.message);
+        location.reload();
+    }
+</script>
+
+</body>
+</html>
+
+
+<!-- ... Diğer HTML kodları ... -->
